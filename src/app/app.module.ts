@@ -5,26 +5,24 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { AppComponent } from './app.component';
-import { HomePage } from '../pages/home/home';
+
+// Pages
+// TODO: Figure out how to handle non-existing paages
+import { CoursesPageModule } from '../pages/courses/courses.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomePage
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(AppComponent)
+    IonicModule.forRoot(AppComponent),
+    CoursesPageModule
   ],
   bootstrap: [IonicApp],
-  entryComponents: [
-    AppComponent,
-    HomePage
-  ],
+  entryComponents: [AppComponent],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
 export class AppModule {}
