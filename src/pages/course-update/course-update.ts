@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Injector } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+
+import { BasePage } from '../basePage';
 
 @IonicPage({
   name: 'course.update',
@@ -10,14 +12,15 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   selector: 'page-course-update',
   templateUrl: 'course-update.html'
 })
-export class CourseUpdatePage {
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+export class CourseUpdatePage extends BasePage {
+  constructor(
+    injector: Injector,
+    public navCtrl: NavController,
+    public navParams: NavParams
+  ) {
+    super(injector);
     this.courseId = parseInt(navParams.get('id'), 10);
   }
 
   courseId: number;
-
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad CourseUpdatePage');
-  }
 }

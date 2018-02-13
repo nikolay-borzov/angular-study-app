@@ -9,7 +9,8 @@
     "build": "ionic-app-scripts build",
     "lint": "ionic-app-scripts lint",
     "ionic:build": "ionic-app-scripts build",
-    "ionic:serve": "ionic-app-scripts serve"
+    "ionic:serve": "ionic-app-scripts serve",
+    "start": "npm run ionic:serve"
   },
   "dependencies": {
     "@angular/common": "5.2.3",
@@ -26,13 +27,18 @@
     "@ionic/storage": "2.1.3",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
+    "ngx-take-until-destroy": "^2.1.1",
     "rxjs": "5.5.6",
     "sw-toolbox": "3.6.0",
     "zone.js": "0.8.20"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.1.8",
+    "angular-in-memory-web-api": "^0.5.3",
     "typescript": "2.6.x"
   },
-  "description": "A simple web application to learn Angular 2"
+  "description": "A simple web application to learn Angular 2 and Ionic",
+  "cordova": {
+    "plugins": {}
+  }
 }

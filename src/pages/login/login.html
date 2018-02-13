@@ -7,5 +7,18 @@
 </ion-header>
 
 <ion-content padding>
-  TODO: Add login form
+  <ion-grid>
+    <ion-row justify-content-center>
+      <ion-col col-12
+               col-sm-8
+               col-md-6
+               col-lg-4
+               col-xl-4>
+
+        <login-form (onLoading)="showLoading($event)"
+                    (onLogIn)="goToCoursesPage()"></login-form>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

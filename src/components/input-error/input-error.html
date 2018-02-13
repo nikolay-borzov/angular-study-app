@@ -1,0 +1,15 @@
+<div padding
+     margin-left
+     margin-top
+     class="error-block"
+     *ngIf="input.invalid && (input.dirty || input.touched)">
+  <div *ngIf="input.errors.required">
+    Required
+  </div>
+  <div *ngIf="input.errors.pattern">
+    Wrong format
+  </div>
+  <div *ngIf="input.errors.minlength">
+    Minimum length is {{ input.errors.minlength.requiredLength }}
+  </div>
+</div>

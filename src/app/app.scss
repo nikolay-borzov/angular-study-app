@@ -1,6 +1,5 @@
 // http://ionicframework.com/docs/theming/
 
-
 // App Global Sass
 // --------------------------------------------------
 // Put style rules here that you want to apply globally. These
@@ -14,3 +13,32 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+/*
+  HELPERS
+*/
+
+.text-note {
+  color: #888;
+}
+
+.required::after {
+  content: '*';
+  color: color($colors, danger);
+  vertical-align: super;
+}
+
+@mixin colored-block($color-name) {
+  $color: color($colors, $color-name);
+  color: $color;
+  background-color: transparentize($color, 0.85);
+  border: solid 1px transparentize($color, 0.7);
+}
+
+.warning-block {
+  @include colored-block(warning);
+}
+
+.error-block {
+  @include colored-block(danger);
+}
