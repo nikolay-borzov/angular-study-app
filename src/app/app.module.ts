@@ -12,25 +12,25 @@ import { InMemoryDataService } from './services/in-memory-data.service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app.routing';
 
-import { MatToolbarModule, MatListModule } from '@angular/material';
+import { SharedModule } from './shared.module';
+
 import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
+import { UserWidgetComponent } from './components/user-widget/user-widget.component';
 
 import { LoginModule } from './pages/login/login.module';
 
 @NgModule({
-  declarations: [AppComponent, BreadcrumbsComponent],
+  declarations: [AppComponent, BreadcrumbsComponent, UserWidgetComponent],
 
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    FormsModule,
     // Intercepts HTTP requests and returns simulated server responses.
     HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
       dataEncapsulation: false
     }),
-    MatToolbarModule,
-    MatListModule,
+    SharedModule,
     LoginModule,
     AppRoutingModule
   ],

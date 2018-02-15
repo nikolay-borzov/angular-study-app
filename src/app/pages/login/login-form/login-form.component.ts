@@ -45,7 +45,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
     this.startLoading();
 
     this.loginService
-      .getLoggedUser()
+      .loggedUser()
       .finally(this.stopLoading)
       .takeUntil(this.destroyed$)
       .subscribe(user => {
@@ -55,7 +55,12 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {}
 
-  private onSuccess = user => this.loggedIn.emit(this.loginService.redirectUrl);
+  private resetModel() {
+    this.model.login = '';
+    this.model.password = '';
+  }
+
+  private onSuccess = () => this.loggedIn.emit(this.loginService.redirectUrl);
 
   private onError = errors => {
     if (errors.wrongLoginPassword) {
@@ -87,6 +92,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
       .finally(this.stopLoading)
       .takeUntil(this.destroyed$)
       .subscribe(() => {
+        this.resetModel();
         this.loggedAs = null;
       });
   }

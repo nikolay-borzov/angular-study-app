@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import {
+  MatToolbarModule,
   MatCardModule,
   MatFormFieldModule,
   MatInputModule,
@@ -16,6 +17,7 @@ const modules = [
   CommonModule,
   FormsModule,
   RouterModule,
+  MatToolbarModule,
   MatCardModule,
   MatFormFieldModule,
   MatInputModule,

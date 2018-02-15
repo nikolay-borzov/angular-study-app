@@ -43,7 +43,6 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
       .filter(event => event instanceof NavigationEnd)
       .takeUntil(this.destroyed$)
       .subscribe(() => {
-        console.log('NavigationEnd', this.activatedRoute.root);
         const root: ActivatedRoute = this.activatedRoute.root;
         this.breadcrumbs = this.getBreadcrumbs(root);
       });

@@ -1,0 +1,11 @@
+<div *ngIf="userName"
+     class="user-widget">
+  Logged as:
+  <strong>{{userName}}</strong>
+  <button type="button"
+          mat-button
+          color="primary"
+          (click)="logOut()">
+    Sign out
+  </button>
+</div>

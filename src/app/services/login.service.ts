@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/fromPromise';
 import 'rxjs/add/observable/throw';
@@ -18,6 +19,8 @@ const DELAY = 450;
 export class LoginService {
   private USER_STORAGE_KEY = 'user';
   private API_URL = 'api/users';
+
+  private loggedUserSubject: BehaviorSubject<User>;
 
   /**
    * Stores URL to be redirected to after succesful login
@@ -39,16 +42,34 @@ export class LoginService {
     }
   };
 
-  isAuthenticated() {
-    return Observable.of(this.storage.get<any>(this.USER_STORAGE_KEY)).map(
-      user => !!user
-    );
+  private getUser() {
+    return this.storage.get<User>(this.USER_STORAGE_KEY);
   }
 
-  getLoggedUser() {
-    return Observable.of(this.storage.get<User>(this.USER_STORAGE_KEY)).delay(
-      DELAY
-    );
+  private setUser(user: User) {
+    if (user) {
+      this.storage.set(this.USER_STORAGE_KEY, user);
+    } else {
+      this.storage.remove(this.USER_STORAGE_KEY);
+    }
+
+    this.loggedUserSubject.next(user);
+
+    return Observable.of(user);
+  }
+
+  isAuthenticated() {
+    // TODO: Manage to use this.loggedUser()
+    return Observable.of(!!this.getUser()); //this.loggedUser().map(user => !!user);
+  }
+
+  loggedUser() {
+    if (!this.loggedUserSubject) {
+      const user = this.getUser();
+      this.loggedUserSubject = new BehaviorSubject(user);
+    }
+
+    return this.loggedUserSubject.delay(DELAY);
   }
 
   logIn(login, password) {
@@ -67,16 +88,12 @@ export class LoginService {
         const user = users[0];
 
         // Keep user object in storage and return it
-        return Observable.of(
-          this.storage.set(this.USER_STORAGE_KEY, user)
-        ).mapTo(user);
+        return this.setUser(user);
       })
       .delay(DELAY);
   }
 
   logOut() {
-    return Observable.of(this.storage.remove(this.USER_STORAGE_KEY)).delay(
-      DELAY
-    );
+    return this.setUser(null).delay(DELAY);
   }
 }

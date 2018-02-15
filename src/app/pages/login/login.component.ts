@@ -21,6 +21,6 @@ export class LoginPageComponent implements OnInit {
   }
 
   goToCoursesPage(redirectToUrl: string) {
-    this.router.navigateByUrl(redirectToUrl || '/');
+    this.router.navigate([redirectToUrl || '/']);
   }
 }
