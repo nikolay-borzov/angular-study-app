@@ -1,0 +1,11 @@
+<mat-list class="breadcrumbs">
+  <mat-list-item class="crumb"
+                 *ngFor="let breadcrumb of breadcrumbs; let isLast = last">
+    <ng-container *ngIf="!isLast">
+      <a [routerLink]="[breadcrumb.url, breadcrumb.params]">{{ breadcrumb.label }}</a>
+    </ng-container>
+    <ng-container *ngIf="isLast">
+      {{ breadcrumb.label }}
+    </ng-container>
+  </mat-list-item>
+</mat-list>

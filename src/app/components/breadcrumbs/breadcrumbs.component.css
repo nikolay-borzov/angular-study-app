@@ -1,0 +1,16 @@
+.breadcrumbs {
+  display: flex;
+  padding: 0;
+}
+
+.crumb {
+  position: relative;
+}
+
+.crumb + .crumb::before {
+  content: '❯';
+  position: absolute;
+  top: 50%;
+  left: -4px; /* quarter of .mat-list-item-content padding */
+  transform: translateY(-50%);
+}

@@ -1,0 +1,23 @@
+.content-grid {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: 64px auto 64px;
+}
+
+.header {
+  grid-column: 1;
+  grid-row: 1 / 2;
+}
+
+.content {
+  grid-column: 1;
+  grid-row: 2 / 3;
+  position: relative;
+}
+
+.footer {
+  grid-column: 1;
+  grid-row: 3 / 4;
+  justify-content: center;
+  font-size: 16px;
+}

@@ -1,8 +1,5 @@
 import { Injectable } from '@angular/core';
-
 import { HttpClient, HttpParams } from '@angular/common/http';
-
-import { Storage } from '@ionic/storage';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
@@ -22,18 +19,36 @@ export class LoginService {
   private USER_STORAGE_KEY = 'user';
   private API_URL = 'api/users';
 
-  constructor(private http: HttpClient, private storage: Storage) {}
+  /**
+   * Stores URL to be redirected to after succesful login
+   */
+  redirectUrl: string;
+
+  constructor(private http: HttpClient) {}
+
+  storage = {
+    get<T>(key): T | null {
+      const rawValue = localStorage.getItem(key);
+      return rawValue ? (JSON.parse(rawValue) as T) : null;
+    },
+    set(key, value) {
+      return localStorage.setItem(key, JSON.stringify(value));
+    },
+    remove(key) {
+      localStorage.removeItem(key);
+    }
+  };
 
   isAuthenticated() {
-    return Observable.fromPromise(this.storage.get(this.USER_STORAGE_KEY)).map(
+    return Observable.of(this.storage.get<any>(this.USER_STORAGE_KEY)).map(
       user => !!user
     );
   }
 
   getLoggedUser() {
-    return Observable.fromPromise(
-      this.storage.get(this.USER_STORAGE_KEY).then(data => data as User)
-    ).delay(DELAY);
+    return Observable.of(this.storage.get<User>(this.USER_STORAGE_KEY)).delay(
+      DELAY
+    );
   }
 
   logIn(login, password) {
@@ -52,7 +67,7 @@ export class LoginService {
         const user = users[0];
 
         // Keep user object in storage and return it
-        return Observable.fromPromise(
+        return Observable.of(
           this.storage.set(this.USER_STORAGE_KEY, user)
         ).mapTo(user);
       })
@@ -60,8 +75,8 @@ export class LoginService {
   }
 
   logOut() {
-    return Observable.fromPromise(
-      this.storage.remove(this.USER_STORAGE_KEY)
-    ).delay(DELAY);
+    return Observable.of(this.storage.remove(this.USER_STORAGE_KEY)).delay(
+      DELAY
+    );
   }
 }

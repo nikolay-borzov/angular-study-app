@@ -1,0 +1,74 @@
+<ng-container *ngIf="!loggedAs">
+  <form #loginForm="ngForm"
+        (ngSubmit)="onSubmit()">
+    <mat-card>
+      <mat-card-content class="mat-card-content-form">
+        <div class="warning-block"
+             *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+
+        <mat-form-field>
+          <mat-label>Login</mat-label>
+          <input name="login"
+                 type="text"
+                 required
+                 pattern="{{ validation.login.pattern }}"
+                 matInput
+                 #login="ngModel"
+                 [(ngModel)]="model.login" />
+          <mat-hint>Only latin characters</mat-hint>
+          <mat-error>
+            <app-input-error [input]="login"></app-input-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Password</mat-label>
+          <input type="password"
+                 name="password"
+                 required
+                 pattern="{{ validation.password.pattern }}"
+                 matInput
+                 #password="ngModel"
+                 [(ngModel)]="model.password" />
+          <mat-hint>Latin characters and numbers</mat-hint>
+          <mat-error>
+            <app-input-error [input]="password"></app-input-error>
+          </mat-error>
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button type="submit"
+                mat-raised-button
+                color="primary"
+                [disabled]="!loginForm.form.valid">
+          Sign In
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </form>
+</ng-container>
+
+<ng-container *ngIf="loggedAs">
+  <mat-card>
+    <mat-card-content>
+      <mat-list>
+        <h3 mat-subheader>Logged as:</h3>
+        <mat-list-item>
+          <strong>{{ loggedAs.name }}</strong>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button type="button"
+              mat-raised-button
+              color="primary"
+              (click)="logOut()">
+        Sign out
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</ng-container>

@@ -1,0 +1,11 @@
+<ng-container *ngIf="input.invalid && (input.dirty || input.touched)">
+  <ng-container *ngIf="input.errors.required">
+    Required
+  </ng-container>
+  <ng-container *ngIf="input.errors.pattern">
+    Wrong format
+  </ng-container>
+  <ng-container *ngIf="input.errors.minlength">
+    Minimum length is {{ input.errors.minlength.requiredLength }}
+  </ng-container>
+</ng-container>

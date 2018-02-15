@@ -1,46 +1,42 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+// Fake API
 import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
 import { InMemoryDataService } from './services/in-memory-data.service';
 
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { IonicStorageModule } from '@ionic/storage';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { StatusBar } from '@ionic-native/status-bar';
-
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app.routing';
 
-// Pages
-// TODO: Figure out how to handle non-existing pages
-import { LoginPageModule } from '../pages/login/login.module';
+import { MatToolbarModule, MatListModule } from '@angular/material';
+import { BreadcrumbsComponent } from './components/breadcrumbs/breadcrumbs.component';
+
+import { LoginModule } from './pages/login/login.module';
 
 @NgModule({
+  declarations: [AppComponent, BreadcrumbsComponent],
+
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
     // Intercepts HTTP requests and returns simulated server responses.
     HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
       dataEncapsulation: false
     }),
-    IonicModule.forRoot(AppComponent),
-    IonicStorageModule.forRoot(),
-    LoginPageModule
+    MatToolbarModule,
+    MatListModule,
+    LoginModule,
+    AppRoutingModule
   ],
 
-  declarations: [AppComponent],
+  providers: [],
 
-  bootstrap: [IonicApp],
-
-  entryComponents: [AppComponent],
-
-  providers: [
-    StatusBar,
-    SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
-  ]
+  bootstrap: [AppComponent]
 })
 export class AppModule {}
