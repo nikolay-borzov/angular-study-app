@@ -41,13 +41,32 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
     // Subscribe to the NavigationEnd event
     this.router.events
       .filter(event => event instanceof NavigationEnd)
+      .takeUntil(this.destroyed$)
       .subscribe(() => {
+        console.log('NavigationEnd', this.activatedRoute.root);
         const root: ActivatedRoute = this.activatedRoute.root;
         this.breadcrumbs = this.getBreadcrumbs(root);
       });
   }
 
   ngOnDestroy() {}
+
+  private createBreadcrumb(url: string, child: ActivatedRoute) {
+    // Get the route's URL segment
+    const routeURL: string = child.snapshot.url
+      .map(segment => segment.path)
+      .join('/');
+
+    // Append route URL to URL
+    url += `/${routeURL}`;
+
+    // Add breadcrumb
+    return {
+      label: child.snapshot.data[this.TITLE_PROPERTY],
+      params: child.snapshot.params,
+      url: url
+    } as IBreadcrumb;
+  }
 
   private getBreadcrumbs(
     route: ActivatedRoute,
@@ -69,26 +88,12 @@ export class BreadcrumbsComponent implements OnInit, OnDestroy {
         continue;
       }
 
-      // Only routes with specified title
-      if (!child.snapshot.data.hasOwnProperty(this.TITLE_PROPERTY)) {
-        return this.getBreadcrumbs(child, url, breadcrumbs);
+      const hasTitle = child.snapshot.data.hasOwnProperty(this.TITLE_PROPERTY);
+      const hasPath = child.snapshot.url.length > 0;
+
+      if (hasTitle && hasPath) {
+        breadcrumbs.push(this.createBreadcrumb(url, child));
       }
-
-      // Get the route's URL segment
-      const routeURL: string = child.snapshot.url
-        .map(segment => segment.path)
-        .join('/');
-
-      // Append route URL to URL
-      url += `/${routeURL}`;
-
-      // Add breadcrumb
-      const breadcrumb: IBreadcrumb = {
-        label: child.snapshot.data[this.TITLE_PROPERTY],
-        params: child.snapshot.params,
-        url: url
-      };
-      breadcrumbs.push(breadcrumb);
 
       // Recursive
       return this.getBreadcrumbs(child, url, breadcrumbs);
