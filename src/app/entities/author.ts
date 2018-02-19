@@ -1,5 +1,5 @@
-export class User {
-  id: string;
+export class Author {
+  id: number;
   name: string;
 
   constructor() {}

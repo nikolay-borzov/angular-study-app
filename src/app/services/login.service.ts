@@ -13,12 +13,12 @@ import 'rxjs/add/operator/mapTo';
 
 import { User } from '../entities/user';
 
-const DELAY = 450;
+const delay = 450;
 
 @Injectable()
 export class LoginService {
-  private USER_STORAGE_KEY = 'user';
-  private API_URL = 'api/users';
+  private userStorageKey = 'user';
+  private apiUrl = 'api/users';
 
   private loggedUserSubject: BehaviorSubject<User>;
 
@@ -43,14 +43,14 @@ export class LoginService {
   };
 
   private getUser() {
-    return this.storage.get<User>(this.USER_STORAGE_KEY);
+    return this.storage.get<User>(this.userStorageKey);
   }
 
   private setUser(user: User) {
     if (user) {
-      this.storage.set(this.USER_STORAGE_KEY, user);
+      this.storage.set(this.userStorageKey, user);
     } else {
-      this.storage.remove(this.USER_STORAGE_KEY);
+      this.storage.remove(this.userStorageKey);
     }
 
     this.loggedUserSubject.next(user);
@@ -69,7 +69,7 @@ export class LoginService {
       this.loggedUserSubject = new BehaviorSubject(user);
     }
 
-    return this.loggedUserSubject.delay(DELAY);
+    return this.loggedUserSubject.delay(delay);
   }
 
   logIn(login, password) {
@@ -78,7 +78,7 @@ export class LoginService {
     };
 
     return this.http
-      .get<User[]>(this.API_URL, options)
+      .get<User[]>(this.apiUrl, options)
       .switchMap(users => {
         // Return error object
         if (users.length === 0) {
@@ -90,10 +90,10 @@ export class LoginService {
         // Keep user object in storage and return it
         return this.setUser(user);
       })
-      .delay(DELAY);
+      .delay(delay);
   }
 
   logOut() {
-    return this.setUser(null).delay(DELAY);
+    return this.setUser(null).delay(delay);
   }
 }

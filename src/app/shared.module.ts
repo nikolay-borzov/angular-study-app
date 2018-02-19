@@ -10,8 +10,12 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatButtonModule,
-  MatListModule
+  MatListModule,
+  MatIconModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
+
+import * as pipesMap from '../app/pipes';
 
 const modules = [
   CommonModule,
@@ -22,15 +26,20 @@ const modules = [
   MatFormFieldModule,
   MatInputModule,
   MatButtonModule,
-  MatListModule
+  MatListModule,
+  MatIconModule,
+  MatProgressSpinnerModule
 ];
 
 export function getArrayFromObject(obj) {
   return Object.keys(obj).map(key => obj[key]);
 }
 
+const pipes = [...getArrayFromObject(pipesMap)];
+
 @NgModule({
   imports: [...modules],
-  exports: [...modules]
+  declarations: [...pipes],
+  exports: [...modules, ...pipes]
 })
 export class SharedModule {}

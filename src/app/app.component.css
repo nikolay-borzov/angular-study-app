@@ -1,16 +1,19 @@
-.content-grid {
+.container {
   display: grid;
   grid-template-columns: 100%;
   grid-template-rows: 64px auto 64px;
 }
 
 .header {
+  position: fixed;
+  z-index: 5;
   grid-column: 1;
   grid-row: 1 / 2;
   justify-content: space-between;
 }
 
 .content {
+  padding: 16px;
   grid-column: 1;
   grid-row: 2 / 3;
   position: relative;

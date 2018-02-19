@@ -6,8 +6,11 @@ import * as pages from './pages';
 
 import { CoursesRoutingModule } from './courses.routing';
 
+import { CoursesService } from '../../services/courses.service';
+
 @NgModule({
   imports: [SharedModule, CoursesRoutingModule],
-  declarations: [...getArrayFromObject(pages)]
+  declarations: [...getArrayFromObject(pages)],
+  providers: [CoursesService]
 })
 export class CoursesModule {}

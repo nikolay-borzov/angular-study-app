@@ -1,3 +1,71 @@
-<p>
-  TODO: Add Courses list
-</p>
+<div class="grid">
+  <mat-card class="toolbar">
+    <div class="fiter">
+      <mat-icon class="filter-icon">search</mat-icon>
+
+      <mat-form-field>
+        <input name="filterTerm"
+               type="search"
+               aria-label="Find"
+               #filterInput
+               [value]='filterTerm'
+               matInput/>
+        <mat-placeholder>Part of a name</mat-placeholder>
+        <button mat-button
+                matSuffix
+                mat-icon-button
+                aria-label="Clear"
+                *ngIf="filterTerm.length > 0"
+                (click)="clearFilter()">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <button mat-raised-button
+            color="primary"
+            routerLink="new">
+      <mat-icon>add_box</mat-icon>
+      Add Course
+    </button>
+  </mat-card>
+
+  <div class="list-container">
+    <div class="list"
+         [hidden]='loading'>
+      <mat-card *ngFor="let course of courses$ | async"
+                class="course">
+        <div class="course-content">
+          <mat-card-title>
+            {{ course.name }}
+          </mat-card-title>
+          <mat-card-subtitle class="course-info">
+            <div>Duration: {{ course.durationMinutes | duration }}</div>
+            <div>Created: {{ course.createData | date:"dd.MM.yyyy" }}</div>
+          </mat-card-subtitle>
+
+          <mat-card-content class="course-description">
+            {{ course.description }}
+          </mat-card-content>
+        </div>
+
+        <mat-card-actions class="course-actions">
+          <button mat-raised-button
+                  color="primary"
+                  routerLink="{{course.id}}">
+            <mat-icon>edit</mat-icon>
+            Edit
+          </button>
+          <button mat-button
+                  color="warn">
+            <mat-icon>delete</mat-icon>
+            Delete
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <mat-spinner class="loading-spinner"
+                 [hidden]='!loading'></mat-spinner>
+  </div>
+</div>

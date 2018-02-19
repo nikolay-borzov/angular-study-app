@@ -9,26 +9,20 @@ const routes: Routes = [
   {
     path: '',
     component: pages.CoursesPageComponent,
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        canActivateChild: [AuthGuard],
-        children: [
-          {
-            path: 'new',
-            component: pages.CourseCreatePageComponent,
-            data: { title: 'Create Course' }
-          },
-          /// TOOD: handle not existing course
-          {
-            path: ':id',
-            component: pages.CourseUpdatePageComponent,
-            data: { title: 'Update Course' }
-          }
-        ]
-      }
-    ]
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'new',
+    component: pages.CourseCreatePageComponent,
+    data: { title: 'Create Course' },
+    canActivate: [AuthGuard]
+  },
+  // TOOD: handle not existing course
+  {
+    path: ':id',
+    component: pages.CourseUpdatePageComponent,
+    data: { title: 'Update Course' },
+    canActivate: [AuthGuard]
   }
 ];
 
