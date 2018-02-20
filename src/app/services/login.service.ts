@@ -13,8 +13,6 @@ import 'rxjs/add/operator/mapTo';
 
 import { User } from '../entities/user';
 
-const delay = 450;
-
 @Injectable()
 export class LoginService {
   private userStorageKey = 'user';
@@ -69,7 +67,7 @@ export class LoginService {
       this.loggedUserSubject = new BehaviorSubject(user);
     }
 
-    return this.loggedUserSubject.delay(delay);
+    return this.loggedUserSubject;
   }
 
   logIn(login, password) {
@@ -77,23 +75,20 @@ export class LoginService {
       params: new HttpParams().set('id', login).set('password', password)
     };
 
-    return this.http
-      .get<User[]>(this.apiUrl, options)
-      .switchMap(users => {
-        // Return error object
-        if (users.length === 0) {
-          return Observable.throw({ wrongLoginPassword: true });
-        }
+    return this.http.get<User[]>(this.apiUrl, options).switchMap(users => {
+      // Return error object
+      if (users.length === 0) {
+        return Observable.throw({ wrongLoginPassword: true });
+      }
 
-        const user = users[0];
+      const user = users[0];
 
-        // Keep user object in storage and return it
-        return this.setUser(user);
-      })
-      .delay(delay);
+      // Keep user object in storage and return it
+      return this.setUser(user);
+    });
   }
 
   logOut() {
-    return this.setUser(null).delay(delay);
+    return this.setUser(null);
   }
 }

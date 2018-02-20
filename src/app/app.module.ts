@@ -19,6 +19,8 @@ import { UserWidgetComponent } from './components/user-widget/user-widget.compon
 
 import { LoginModule } from './pages/login/login.module';
 
+const fakeServiceDelay = 500;
+
 @NgModule({
   declarations: [AppComponent, BreadcrumbsComponent, UserWidgetComponent],
 
@@ -28,7 +30,8 @@ import { LoginModule } from './pages/login/login.module';
     HttpClientModule,
     // Intercepts HTTP requests and returns simulated server responses.
     HttpClientInMemoryWebApiModule.forRoot(InMemoryDataService, {
-      dataEncapsulation: false
+      dataEncapsulation: false,
+      delay: fakeServiceDelay
     }),
     SharedModule,
     LoginModule,

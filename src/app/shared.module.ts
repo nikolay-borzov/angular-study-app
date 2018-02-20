@@ -12,7 +12,8 @@ import {
   MatButtonModule,
   MatListModule,
   MatIconModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatDialogModule
 } from '@angular/material';
 
 import * as pipesMap from '../app/pipes';
@@ -28,7 +29,8 @@ const modules = [
   MatButtonModule,
   MatListModule,
   MatIconModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatDialogModule
 ];
 
 export function getArrayFromObject(obj) {

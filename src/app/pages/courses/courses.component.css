@@ -32,9 +32,17 @@
   justify-content: center;
 }
 
+.list {
+  padding-top: 16px;
+  flex-grow: 1;
+}
+
 .course {
-  margin-top: 16px;
   display: flex;
+}
+
+.course + .course {
+  margin-top: 16px;
 }
 
 .course-content {

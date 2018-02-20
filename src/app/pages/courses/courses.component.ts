@@ -6,7 +6,7 @@ import {
   ElementRef
 } from '@angular/core';
 
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
@@ -15,12 +15,16 @@ import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
 import { TakeUntilDestroy, OnDestroy } from 'ngx-take-until-destroy';
 
 import { CoursesService } from '../../services/courses.service';
 import { Course } from '../../entities/course';
+import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 
 const inputDebounce = 450;
+const filterTermParamName = 'query';
 
 @TakeUntilDestroy()
 @Component({
@@ -28,7 +32,7 @@ const inputDebounce = 450;
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.css']
 })
-export class CoursesPageComponent implements AfterViewInit, OnDestroy {
+export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly destroyed$: Observable<boolean>;
 
   @ViewChild('filterInput') filterInput: ElementRef;
@@ -36,24 +40,34 @@ export class CoursesPageComponent implements AfterViewInit, OnDestroy {
 
   courses$: Observable<Course[]>;
 
-  loading = true;
+  private path: string;
 
-  constructor(private service: CoursesService, private route: ActivatedRoute) {}
+  constructor(
+    private service: CoursesService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private dialog: MatDialog
+  ) {}
+
+  ngOnInit() {
+    // Get current path
+    this.path = this.route.pathFromRoot
+      .filter(route => route.snapshot.url.length)
+      .map(route => {
+        return route.snapshot.url[0].path;
+      })
+      .join('/');
+  }
 
   ngOnDestroy() {}
 
   ngAfterViewInit() {
-    // Wait till filterTerm is bound to the view
+    // Wait until filterTerm is bound to the view
     // Receive term from URL parameters
-    this.courses$ = this.route.paramMap
-      .switchMap((params: ParamMap) => {
-        this.filterTerm = params.get('query') || '';
-
-        return this.service.getCourses(this.filterTerm);
-      })
-      .takeUntil(this.destroyed$)
-      .do(this.stopLoading)
-      .finally(this.stopLoading);
+    this.courses$ = this.route.paramMap.switchMap((params: ParamMap) => {
+      this.filterTerm = params.get(filterTermParamName) || '';
+      return this.service.getCourses(this.filterTerm);
+    });
 
     // Use observable to debounce input
     Observable.fromEvent(this.filterInput.nativeElement, 'keyup')
@@ -61,26 +75,27 @@ export class CoursesPageComponent implements AfterViewInit, OnDestroy {
       .map((event: KeyboardEvent) => (<HTMLInputElement>event.target).value)
       .distinctUntilChanged()
       .takeUntil(this.destroyed$)
-      .subscribe(this.onFilterChange);
+      .subscribe(this.updateFilterTerm);
   }
 
-  clearFilter() {
-    this.startLoading();
-    this.filterTerm = '';
-    this.service.filterCourses('');
+  deleteCourse(course: Course) {
+    const dialogRef = this.dialog.open(DeleteDialogComponent, {
+      data: { courseName: course.name }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmDelete => {
+      if (confirmDelete) {
+        this.courses$ = this.service.deleteCourse(course.id);
+      }
+    });
   }
 
-  private onFilterChange = term => {
-    this.startLoading();
-    this.filterTerm = term;
-    this.service.filterCourses(term);
-  };
+  private updateFilterTerm = value => {
+    this.filterTerm = value;
 
-  private startLoading = () => {
-    this.loading = true;
-  };
+    const params = value ? { [filterTermParamName]: value } : {};
 
-  private stopLoading = () => {
-    this.loading = false;
+    this.router.navigate([this.path, params]);
+    this.service.filterCourses(value);
   };
 }

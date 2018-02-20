@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
+import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import { catchError } from 'rxjs/operators';
 
 import { Course } from '../entities/course';
-
-const delay = 450;
 
 @Injectable()
 export class CoursesService {
@@ -19,7 +19,9 @@ export class CoursesService {
   constructor(private http: HttpClient) {}
 
   getCourses(filterTerm = '') {
-    this.filter$ = new BehaviorSubject(filterTerm);
+    if (!this.filter$) {
+      this.filter$ = new BehaviorSubject(filterTerm);
+    }
 
     return this.http
       .get<Course[]>(this.apiUrl)
@@ -29,11 +31,29 @@ export class CoursesService {
 
           return name.includes(term.toLowerCase());
         });
-      })
-      .delay(delay);
+      });
   }
 
   filterCourses(filterTerm: string) {
     this.filter$.next(filterTerm);
+  }
+
+  getCourse(id: number) {
+    // TODO: handle not existing course
+  }
+
+  addCourse(course: Course) {}
+
+  /**
+   * Deletes specified course
+   * @param {number} id - Course ID to delete
+   * @returns {Observable<Course[]>} - Courses observable list
+   */
+  deleteCourse(id: number) {
+    const url = `${this.apiUrl}/${id}`;
+    // TODO: handle not existing course
+    return this.http
+      .delete(`${this.apiUrl}/${id}`)
+      .switchMap(() => this.getCourses());
   }
 }
