@@ -12,8 +12,7 @@ import { User } from '../../../entities/user';
 @TakeUntilDestroy()
 @Component({
   selector: 'app-login-form',
-  templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.css']
+  templateUrl: './login-form.component.html'
 })
 export class LoginFormComponent implements OnInit, OnDestroy {
   readonly destroyed$: Observable<boolean>;

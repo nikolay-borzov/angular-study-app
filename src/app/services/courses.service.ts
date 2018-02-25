@@ -21,6 +21,8 @@ export class CoursesService {
   getCourses(filterTerm = '') {
     if (!this.filter$) {
       this.filter$ = new BehaviorSubject(filterTerm);
+    } else {
+      this.filterCourses(filterTerm);
     }
 
     return this.http
@@ -39,10 +41,21 @@ export class CoursesService {
   }
 
   getCourse(id: number) {
+    const url = `${this.apiUrl}/${id}`;
     // TODO: handle not existing course
+    return this.http.get(`${this.apiUrl}/${id}`);
   }
 
-  addCourse(course: Course) {}
+  addCourse(course: Course) {
+    const hero = { name };
+    // TODO: handle errors
+    return this.http.post<Course>(this.apiUrl, course);
+  }
+
+  updateCourse(course: Course) {
+    // TODO: handle errors
+    return this.http.put(this.apiUrl, course);
+  }
 
   /**
    * Deletes specified course

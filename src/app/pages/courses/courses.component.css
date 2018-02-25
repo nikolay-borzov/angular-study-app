@@ -37,6 +37,10 @@
   flex-grow: 1;
 }
 
+.not-found-message {
+  text-align: center;
+}
+
 .course {
   display: flex;
 }

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import {
@@ -17,10 +17,12 @@ import {
 } from '@angular/material';
 
 import * as pipesMap from '../app/pipes';
+import * as directivesMap from '../app/directives';
 
 const modules = [
   CommonModule,
   FormsModule,
+  ReactiveFormsModule,
   RouterModule,
   MatToolbarModule,
   MatCardModule,
@@ -38,10 +40,11 @@ export function getArrayFromObject(obj) {
 }
 
 const pipes = [...getArrayFromObject(pipesMap)];
+const directives = [...getArrayFromObject(directivesMap)];
 
 @NgModule({
   imports: [...modules],
-  declarations: [...pipes],
-  exports: [...modules, ...pipes]
+  declarations: [...pipes, ...directives],
+  exports: [...modules, ...pipes, ...directives]
 })
 export class SharedModule {}

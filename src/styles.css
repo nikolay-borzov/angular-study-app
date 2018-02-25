@@ -22,3 +22,18 @@
 .dialog-actions {
   justify-content: flex-end;
 }
+
+.mat-card-actions {
+  display: flex !important;
+  justify-content: center;
+  margin-bottom: -16px;
+}
+
+.mat-form-field + .mat-form-field {
+  margin-top: 8px;
+}
+
+.mat-card-content-form {
+  display: flex !important;
+  flex-direction: column;
+}

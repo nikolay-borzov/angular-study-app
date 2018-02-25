@@ -7,8 +7,8 @@
         <input name="filterTerm"
                type="search"
                aria-label="Find"
-               #filterInput
                [value]='filterTerm'
+               #filterInput
                matInput/>
         <mat-placeholder>Part of a name</mat-placeholder>
         <button mat-button
@@ -19,6 +19,9 @@
                 (click)="updateFilterTerm('')">
           <mat-icon>clear</mat-icon>
         </button>
+        <!--  [value]='filterTerm' 
+        *ngIf="filterTerm.length > 0"
+        -->
       </mat-form-field>
     </div>
 
@@ -66,8 +69,11 @@
           </mat-card-actions>
         </mat-card>
       </ng-container>
+
       <ng-template #empty>
-        No courses found
+        <div class="not-found-message">
+          No courses found
+        </div>
       </ng-template>
     </div>
 

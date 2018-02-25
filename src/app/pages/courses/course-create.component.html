@@ -1,3 +1,62 @@
-<p>
-  TODO: Add Course form
-</p>
+<form [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      novalidate>
+  <mat-card>
+    <mat-card-content class="mat-card-content-form">
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input formControlName="name"
+               maxlength="{{ maxLength.name }}"
+               matInput/>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea formControlName="description"
+                  maxlength="{{ maxLength.description }}"
+                  matInput
+                  matTextareaAutosize></textarea>
+      </mat-form-field>
+
+      <p>Form value: {{ form.value | json }}</p>
+      <p>Form status: {{ form.status | json }}</p>
+
+      <mat-form-field>
+        <mat-label>Date</mat-label>
+        <input formControlName="date"
+               appPatternInput="dd.dd.dddd"
+               matInput />
+        <mat-hint>dd.MM.yyyy</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Duration</mat-label>
+        <input formControlName="duration"
+               matInput />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Authors</mat-label>
+        <input name="authors"
+               type="text"
+               matInput />
+      </mat-form-field>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button type="button"
+              mat-button
+              color="primary"
+              [disabled]="form.pristine"
+              (click)="onCancel()">
+        Cancel
+      </button>
+      <button type="submit"
+              mat-raised-button
+              color="primary"
+              [disabled]="form.pristine">
+        Create
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

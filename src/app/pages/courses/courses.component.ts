@@ -57,6 +57,15 @@ export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
         return route.snapshot.url[0].path;
       })
       .join('/');
+
+    // Set filter term from URL query string
+    this.route.paramMap
+      .takeUntil(this.destroyed$)
+      .subscribe((params: ParamMap) => {
+        console.log('reading route params');
+        this.filterTerm = params.get(filterTermParamName) || '';
+        this.courses$ = this.service.getCourses(this.filterTerm);
+      });
   }
 
   ngOnDestroy() {}
@@ -64,10 +73,11 @@ export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     // Wait until filterTerm is bound to the view
     // Receive term from URL parameters
-    this.courses$ = this.route.paramMap.switchMap((params: ParamMap) => {
+    /*this.courses$ = this.route.paramMap.switchMap((params: ParamMap) => {
+      console.log('reading route params');
       this.filterTerm = params.get(filterTermParamName) || '';
       return this.service.getCourses(this.filterTerm);
-    });
+    });*/
 
     // Use observable to debounce input
     Observable.fromEvent(this.filterInput.nativeElement, 'keyup')
@@ -91,11 +101,12 @@ export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateFilterTerm = value => {
-    this.filterTerm = value;
+    console.log('updateFilterTerm', value);
+    // this.filterTerm = value;
 
     const params = value ? { [filterTermParamName]: value } : {};
 
     this.router.navigate([this.path, params]);
-    this.service.filterCourses(value);
+    // this.service.filterCourses(value);
   };
 }
