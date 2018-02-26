@@ -4,41 +4,26 @@
       <mat-icon class="filter-icon">search</mat-icon>
 
       <mat-form-field>
-        <input name="filterTerm"
-               type="search"
-               aria-label="Find"
-               [value]='filterTerm'
-               #filterInput
-               matInput/>
+        <input name="filterTerm" type="search" aria-label="Find" [value]='filterTerm' #filterInput
+          matInput/>
         <mat-placeholder>Part of a name</mat-placeholder>
-        <button mat-button
-                matSuffix
-                mat-icon-button
-                aria-label="Clear"
-                *ngIf="filterTerm.length > 0"
-                (click)="updateFilterTerm('')">
+        <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="filterTerm.length > 0"
+          (click)="updateFilterTerm('')">
           <mat-icon>clear</mat-icon>
         </button>
-        <!--  [value]='filterTerm' 
-        *ngIf="filterTerm.length > 0"
-        -->
       </mat-form-field>
     </div>
 
-    <button mat-raised-button
-            color="primary"
-            routerLink="new">
+    <button mat-raised-button color="primary" routerLink="new">
       <mat-icon>add_box</mat-icon>
       Add Course
     </button>
   </mat-card>
 
   <div class="list-container">
-    <div class="list"
-         *ngIf="courses$ | async as courses; else loading">
+    <div class="list" *ngIf="courses$ | async as courses; else loading">
       <ng-container *ngIf="courses.length; else empty">
-        <mat-card *ngFor="let course of courses"
-                  class="course">
+        <mat-card *ngFor="let course of courses" class="course">
           <div class="course-content">
             <mat-card-title>
               {{ course.name }}
@@ -54,15 +39,11 @@
           </div>
 
           <mat-card-actions class="course-actions">
-            <button mat-raised-button
-                    color="primary"
-                    routerLink="{{course.id}}">
+            <button mat-raised-button color="primary" routerLink="{{course.id}}">
               <mat-icon>edit</mat-icon>
               Edit
             </button>
-            <button mat-button
-                    color="warn"
-                    (click)="deleteCourse(course)">
+            <button mat-button color="warn" (click)="deleteCourse(course)">
               <mat-icon>delete</mat-icon>
               Delete
             </button>

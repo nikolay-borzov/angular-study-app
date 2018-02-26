@@ -14,30 +14,23 @@ import { Course } from '../entities/course';
 export class CoursesService {
   private apiUrl = 'api/courses';
 
-  private filter$: BehaviorSubject<string>;
+  private filterLastValue = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getCourses(filterTerm = '') {
-    if (!this.filter$) {
-      this.filter$ = new BehaviorSubject(filterTerm);
-    } else {
-      this.filterCourses(filterTerm);
-    }
+    this.filterLastValue = filterTerm;
 
+    // TODO: return to using combineLatest after migration to Redux
     return this.http
       .get<Course[]>(this.apiUrl)
-      .combineLatest(this.filter$, (courses, term) => {
+      .map((courses) => {
         return courses.filter(course => {
           const name = course.name.toLowerCase();
 
-          return name.includes(term.toLowerCase());
+          return name.includes(this.filterLastValue.toLowerCase());
         });
       });
-  }
-
-  filterCourses(filterTerm: string) {
-    this.filter$.next(filterTerm);
   }
 
   getCourse(id: number) {
@@ -67,6 +60,6 @@ export class CoursesService {
     // TODO: handle not existing course
     return this.http
       .delete(`${this.apiUrl}/${id}`)
-      .switchMap(() => this.getCourses());
+      .switchMap(() => this.getCourses(this.filterLastValue));
   }
 }

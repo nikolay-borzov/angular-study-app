@@ -47,7 +47,7 @@ export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Get current path
@@ -58,27 +58,18 @@ export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       })
       .join('/');
 
-    // Set filter term from URL query string
+    // Set filter term from URL query string and load courses
     this.route.paramMap
       .takeUntil(this.destroyed$)
       .subscribe((params: ParamMap) => {
-        console.log('reading route params');
         this.filterTerm = params.get(filterTermParamName) || '';
         this.courses$ = this.service.getCourses(this.filterTerm);
       });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 
   ngAfterViewInit() {
-    // Wait until filterTerm is bound to the view
-    // Receive term from URL parameters
-    /*this.courses$ = this.route.paramMap.switchMap((params: ParamMap) => {
-      console.log('reading route params');
-      this.filterTerm = params.get(filterTermParamName) || '';
-      return this.service.getCourses(this.filterTerm);
-    });*/
-
     // Use observable to debounce input
     Observable.fromEvent(this.filterInput.nativeElement, 'keyup')
       .debounceTime(inputDebounce)
@@ -101,12 +92,8 @@ export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateFilterTerm = value => {
-    console.log('updateFilterTerm', value);
-    // this.filterTerm = value;
-
     const params = value ? { [filterTermParamName]: value } : {};
 
     this.router.navigate([this.path, params]);
-    // this.service.filterCourses(value);
   };
 }
