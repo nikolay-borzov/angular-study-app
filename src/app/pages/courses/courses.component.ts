@@ -3,21 +3,14 @@ import {
   ViewChild,
   OnInit,
   AfterViewInit,
-  ElementRef
+  ElementRef,
+  OnDestroy
 } from '@angular/core';
-
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/finally';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-
-import { TakeUntilDestroy, OnDestroy } from 'ngx-take-until-destroy';
+import { Observable, fromEvent, } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators'
+import { MatDialog } from '@angular/material';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 import { CoursesService } from '../../services/courses.service';
 import { Course } from '../../entities/course';
@@ -26,15 +19,12 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
 const inputDebounce = 450;
 const filterTermParamName = 'query';
 
-@TakeUntilDestroy()
 @Component({
   selector: 'app-page-courses',
   templateUrl: './courses.component.html',
   styleUrls: ['./courses.component.css']
 })
 export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
-  readonly destroyed$: Observable<boolean>;
-
   @ViewChild('filterInput') filterInput: ElementRef;
   filterTerm = '';
 
@@ -59,8 +49,7 @@ export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
       .join('/');
 
     // Set filter term from URL query string and load courses
-    this.route.paramMap
-      .takeUntil(this.destroyed$)
+    this.route.paramMap.pipe(untilDestroyed(this))
       .subscribe((params: ParamMap) => {
         this.filterTerm = params.get(filterTermParamName) || '';
         this.courses$ = this.service.getCourses(this.filterTerm);
@@ -71,11 +60,13 @@ export class CoursesPageComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
     // Use observable to debounce input
-    Observable.fromEvent(this.filterInput.nativeElement, 'keyup')
-      .debounceTime(inputDebounce)
-      .map((event: KeyboardEvent) => (<HTMLInputElement>event.target).value)
-      .distinctUntilChanged()
-      .takeUntil(this.destroyed$)
+    fromEvent(this.filterInput.nativeElement, 'keyup')
+      .pipe(
+        debounceTime(inputDebounce),
+        map((event: KeyboardEvent) => (<HTMLInputElement>event.target).value),
+        distinctUntilChanged(),
+        untilDestroyed(this)
+      )
       .subscribe(this.updateFilterTerm);
   }
 

@@ -6,20 +6,16 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   CanActivateChild,
-  NavigationExtras,
   CanLoad,
   Route
 } from '@angular/router';
-
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/toPromise';
+import { tap, } from 'rxjs/operators';
 
 import { LoginService } from '../services/login.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
-  constructor(private loginService: LoginService, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router) { }
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -42,12 +38,13 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
   checkLogin(url: string): Promise<boolean> {
     return this.loginService
       .isAuthenticated()
-      .do(authenticated => {
-        if (!authenticated) {
-          this.loginService.redirectUrl = url;
-          this.router.navigate(['/login']);
-        }
-      })
+      .pipe(
+        tap(authenticated => {
+          if (!authenticated) {
+            this.loginService.redirectUrl = url;
+            this.router.navigate(['/login']);
+          }
+        }))
       .toPromise();
   }
 }

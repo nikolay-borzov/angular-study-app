@@ -1,22 +1,16 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/finally';
-import 'rxjs/add/operator/takeUntil';
-
-import { TakeUntilDestroy, OnDestroy } from 'ngx-take-until-destroy';
+import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { untilDestroyed } from 'ngx-take-until-destroy';
 
 import { LoginService } from '../../../services/login.service';
 import { User } from '../../../entities/user';
 
-@TakeUntilDestroy()
 @Component({
   selector: 'app-login-form',
   templateUrl: './login-form.component.html'
 })
 export class LoginFormComponent implements OnInit, OnDestroy {
-  readonly destroyed$: Observable<boolean>;
-
   @Output() loading = new EventEmitter<boolean>();
   @Output() loggedIn = new EventEmitter();
 
@@ -38,21 +32,20 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
   errorMessage = '';
 
-  constructor(private loginService: LoginService) {}
+  constructor(private loginService: LoginService) { }
 
   ngOnInit(): void {
     this.startLoading();
 
     this.loginService
       .loggedUser()
-      .finally(this.stopLoading)
-      .takeUntil(this.destroyed$)
+      .pipe(finalize(this.stopLoading), untilDestroyed(this))
       .subscribe(user => {
         this.loggedAs = user;
       });
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() { }
 
   private resetModel() {
     this.model.login = '';
@@ -78,8 +71,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
     this.loginService
       .logIn(this.model.login, this.model.password)
-      .finally(this.stopLoading)
-      .takeUntil(this.destroyed$)
+      .pipe(finalize(this.stopLoading), untilDestroyed(this))
       .subscribe(this.onSuccess, this.onError);
   }
 
@@ -88,8 +80,7 @@ export class LoginFormComponent implements OnInit, OnDestroy {
 
     this.loginService
       .logOut()
-      .finally(this.stopLoading)
-      .takeUntil(this.destroyed$)
+      .pipe(finalize(this.stopLoading), untilDestroyed(this))
       .subscribe(() => {
         this.resetModel();
         this.loggedAs = null;

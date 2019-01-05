@@ -1,15 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
-import 'rxjs/add/operator/switchMap';
-
 @Component({
   selector: 'app-page-course-update',
   templateUrl: './course-update.component.html',
   styleUrls: ['./course-update.component.css']
 })
 export class CourseUpdatePageComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
     /* this.hero$ = this.route.paramMap

@@ -1,15 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/fromPromise';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mapTo';
+import { BehaviorSubject, of, throwError } from 'rxjs';
+import { switchMap } from 'rxjs/operators'
 
 import { User } from '../entities/user';
 
@@ -21,21 +13,21 @@ export class LoginService {
   private loggedUserSubject: BehaviorSubject<User>;
 
   /**
-   * Stores URL to be redirected to after succesful login
+   * Stores URL to be redirected to after successful login
    */
   redirectUrl: string;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   storage = {
-    get<T>(key): T | null {
+    get<T>(key: string): T | null {
       const rawValue = localStorage.getItem(key);
       return rawValue ? (JSON.parse(rawValue) as T) : null;
     },
-    set(key, value) {
+    set(key: string, value) {
       return localStorage.setItem(key, JSON.stringify(value));
     },
-    remove(key) {
+    remove(key: string) {
       localStorage.removeItem(key);
     }
   };
@@ -53,12 +45,12 @@ export class LoginService {
 
     this.loggedUserSubject.next(user);
 
-    return Observable.of(user);
+    return of(user);
   }
 
   isAuthenticated() {
     // TODO: Manage to use this.loggedUser()
-    return Observable.of(!!this.getUser()); //this.loggedUser().map(user => !!user);
+    return of(!!this.getUser()); //this.loggedUser().map(user => !!user);
   }
 
   loggedUser() {
@@ -75,17 +67,19 @@ export class LoginService {
       params: new HttpParams().set('id', login).set('password', password)
     };
 
-    return this.http.get<User[]>(this.apiUrl, options).switchMap(users => {
-      // Return error object
-      if (users.length === 0) {
-        return Observable.throw({ wrongLoginPassword: true });
-      }
+    return this.http.get<User[]>(this.apiUrl, options).pipe(
+      switchMap(users => {
+        // Return error object
+        if (users.length === 0) {
+          return throwError({ wrongLoginPassword: true });
+        }
 
-      const user = users[0];
+        const user = users[0];
 
-      // Keep user object in storage and return it
-      return this.setUser(user);
-    });
+        // Keep user object in storage and return it
+        return this.setUser(user);
+      })
+    );
   }
 
   logOut() {
